@@ -1,5 +1,7 @@
 # Deploys company/ to GitHub Pages → https://programielabs.com
 # (tya/ is deployed by Cloudflare Pages, which builds on its own from this repo.)
+# Build and deploy are separate jobs, as in GitHub's Pages template: deploy-pages
+# can fail to find an artifact uploaded moments earlier in the same job.
 name: Deploy programielabs.com
 
 on:
@@ -12,17 +14,15 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
       - name: Build and check permanent URLs
@@ -31,5 +31,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist/company
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v5
