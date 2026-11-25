@@ -1,0 +1,16 @@
+# PERMANENT URLS — these are submitted to App Store Connect / Play Console and linked from shipped app builds.
+# Never remove or rename a line. Old app installs keep linking to them forever.
+# Format: <site> <file inside the built site>   (folder/index.html serves both /x and /x/)
+
+company /index.html
+
+tya /index.html
+tya /privacy/index.html
+tya /terms/index.html
+tya /support/index.html
+tya /delete-account/index.html
+
+# Required, not store-submitted: without a 404.html Cloudflare Pages serves index.html
+# with HTTP 200 for every unknown path, which would hide a broken legal URL.
+tya /404.html
+company /404.html
